@@ -21,7 +21,7 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         int a = 0;
         public Vector2 enemyPosition = new Vector2(0, -160);
         public Vector2 enemySpeed { get; set; } = new Vector2(0.5f, 0.5f);
-        
+
         public Enemy(Container parent) : base(parent)
         {
             Children = new[]
@@ -33,6 +33,7 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
             };
             Health = 100;
             Team = 1;
+            OnShoot = enemyShoot;
             Add(hitbox = new Hitbox()
             {
                 Alpha = 1,
@@ -43,10 +44,6 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         protected override void Update()
         {
             base.Update();
-            if (shoot == true)
-            {
-                enemyShoot();
-            }
 
             float ySpeed = enemySpeed.Y * (float)(Clock.ElapsedFrameTime);
             float xSpeed = enemySpeed.X * (float)(Clock.ElapsedFrameTime);

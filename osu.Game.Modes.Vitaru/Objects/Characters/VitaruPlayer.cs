@@ -17,9 +17,9 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         private Dictionary<Key, bool> keys = new Dictionary<Key, bool>();
 
         //stores the player position
-        public Vector2 playerPosition = new Vector2(0, 200);
+        private Vector2 playerPosition = new Vector2(0, 200);
         public Vector4 PlayerBounds = new Vector4(-200, 200, -200, 300);  //MinX,MaxX,MinY,MaxY
-        public Vector2 playerSpeed { get; set; } = new Vector2(0.5f, 0.5f);
+        public Vector2 PlayerSpeed { get; set; } = new Vector2(0.5f, 0.5f);
         //useful when mods get involved or slow debuffs become a thing, pixels per millisecond, different values for x and y
 
 
@@ -78,17 +78,13 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         protected override void Update()
         {
             base.Update();
-            float ySpeed = playerSpeed.Y * (float)(Clock.ElapsedFrameTime);
-            float xSpeed = playerSpeed.X * (float)(Clock.ElapsedFrameTime);
+            float ySpeed = PlayerSpeed.Y * (float)(Clock.ElapsedFrameTime);
+            float xSpeed = PlayerSpeed.X * (float)(Clock.ElapsedFrameTime);
             if (keys[Key.LShift] | keys[Key.RShift])
             {
                 xSpeed /= 2;
                 ySpeed /= 2;
                 //Add hitbox showing here
-            }
-            if (keys[Key.Z])
-            {
-                Shoot();
             }
             if (keys[Key.Up])
             {
@@ -148,6 +144,8 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         //saves if key is pressed
         protected override bool OnKeyDown(InputState state, KeyDownEventArgs args)
         {
+            if (args.Key == Key.Z && !keys[args.Key])
+                RPM *= 5;
             keys[args.Key] = true;
             if (args.Key == Key.LShift || args.Key == Key.RShift)
                 hitbox.Alpha = 1;
@@ -156,6 +154,8 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         //saves if key is released
         protected override bool OnKeyUp(InputState state, KeyUpEventArgs args)
         {
+            if (args.Key == Key.Z && keys[args.Key])
+                RPM /= 5;
             keys[args.Key] = false;
             if (args.Key == Key.LShift || args.Key == Key.RShift)
                 hitbox.Alpha = 0;

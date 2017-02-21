@@ -54,14 +54,6 @@ namespace osu.Desktop.VisualTests.Tests
 
             AddButton(@"New Enemy", NewEnemy);
 
-            enemy = new Enemy(this)
-            {
-                Anchor = Anchor.TopCentre,
-                enemyPosition = new Vector2(0, 100),
-                OnDeath = NewEnemy,
-            };
-            Add(enemy);
-
             score = new SpriteText()
             {
                 Text = "" + (combo * (kills * perfect)),
@@ -77,6 +69,8 @@ namespace osu.Desktop.VisualTests.Tests
                 Origin = Anchor.BottomLeft
             };
             Add(combox);
+
+            NewEnemy();
         }
         protected override void Update()
         {
@@ -92,8 +86,10 @@ namespace osu.Desktop.VisualTests.Tests
             Add(enemy = new Enemy(this)
             {
                 Anchor = Anchor.TopCentre,
-                enemyPosition = new Vector2(RNG.Next(-200,200), RNG.Next(50 , 200)),
+                enemyPosition = new Vector2(RNG.Next(-200, 200), RNG.Next(50, 200)),
                 OnDeath = NewEnemy,
+                Shooting = true,
+                RPM = 3600,
             });
         }
     }

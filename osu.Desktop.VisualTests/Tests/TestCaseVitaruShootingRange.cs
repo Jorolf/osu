@@ -29,21 +29,8 @@ namespace osu.Desktop.VisualTests.Tests
             base.Reset();
             Bullet.bulletsLoaded = 0;
 
-            player = new VitaruPlayer(this)
-            {
-                Anchor = Anchor.Centre,
-                Shooting = true,
-                OnDeath = NewPlayer,
-            };
-            Add(player);
-
-            enemy = new Enemy(this)
-            {
-                Anchor = Anchor.TopCentre,
-                enemyPosition = new Vector2(0, 100),
-                OnDeath = NewEnemy,
-            };
-            Add(enemy);
+            NewPlayer();
+            NewEnemy();
 
             bulletsOnScreen = new SpriteText()
             {
@@ -75,6 +62,8 @@ namespace osu.Desktop.VisualTests.Tests
                 Anchor = Anchor.TopCentre,
                 enemyPosition = new Vector2(new Random().Next(-200, 200), 100),
                 OnDeath = NewEnemy,
+                Shooting = true,
+                RPM = 3600,
             };
             Add(enemy);
         }
@@ -84,6 +73,7 @@ namespace osu.Desktop.VisualTests.Tests
             {
                 Anchor = Anchor.Centre,
                 OnDeath = NewPlayer,
+                Shooting = true,
             };
             Add(player);
         }

@@ -14,7 +14,7 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         public int ProjectileDamage { get; set; }
         public float HitboxWidth { get; set; }
         public float BulletWidth { get; set; }
-        public int BPM { get; set; } = 180;
+        public int RPM { get; set; } = 180;
 
         protected Hitbox hitbox;
         protected Container parent;
@@ -38,7 +38,7 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         /// <returns>If the Character died</returns>
         public bool TakeDamage(int damage)
         {
-            Health -= (int)(damage * Armor);
+            Health -= (int)(damage / Armor);
             if (Health <= 0)
             {
                 Dispose();
@@ -83,11 +83,11 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
             if (Shooting)
             {
                 timeSinceLastShoot += Clock.ElapsedFrameTime;
-                if ((timeSinceLastShoot / 1000.0) > 1 / (BPM / 30.0))
+                while (timeSinceLastShoot / 1000 > 60.0 / RPM)
                 {
                     if(OnShoot != null)
                         OnShoot();
-                    timeSinceLastShoot -= 1 / (BPM / 30.0) * 1000.0;
+                    timeSinceLastShoot -= (60.0/RPM)*1000;
                 }
             }
         }

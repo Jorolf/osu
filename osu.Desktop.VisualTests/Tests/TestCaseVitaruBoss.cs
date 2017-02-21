@@ -49,7 +49,7 @@ namespace osu.Desktop.VisualTests.Tests
             boss = new Boss(this)
             {
                 Anchor = Anchor.TopCentre,
-                bossPosition = new Vector2(0, 100),
+                Position = new Vector2(0, 100),
                 OnDeath = NewBoss,
             };
             Add(boss);
@@ -74,7 +74,7 @@ namespace osu.Desktop.VisualTests.Tests
             boss = new Boss(this)
             {
                 Anchor = Anchor.TopCentre,
-                bossPosition = new Vector2(new Random().Next(-200, 200), new Random() .Next (50 , 200)),
+                Position = new Vector2(new Random().Next(-200, 200), new Random() .Next (50 , 200)),
                 OnDeath = NewBoss,
             };
             Add(boss);

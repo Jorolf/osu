@@ -13,17 +13,15 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
     public class Boss : Character
     {
         public int StartTime { get; set; }
-
-        public Vector2 bossPosition = new Vector2(0, -160);
-        public Vector2 bossSpeed { get; set; } = new Vector2(1, 1);
-
-        private DrawableBoss boss;
+        public Vector2 BossSpeed { get; set; } = new Vector2(0, 0);
+        
+        
 
         public Boss(Container parent) : base(parent)
         {
             Children = new[]
             {
-                boss = new DrawableBoss()
+                new DrawableBoss()
                 {
                     Origin = Anchor.Centre,
                 },
@@ -40,9 +38,10 @@ namespace osu.Game.Modes.Vitaru.Objects.Characters
         protected override void Update()
         {
             base.Update();
-            float ySpeed = bossSpeed.Y * (float)(Clock.ElapsedFrameTime);
-            float xSpeed = bossSpeed.X * (float)(Clock.ElapsedFrameTime);
-            Position = bossPosition;
+            Vector2 bossPosition = Position;
+            bossPosition.Y += BossSpeed.Y * (float)(Clock.ElapsedFrameTime);
+            bossPosition.X += BossSpeed.X * (float)(Clock.ElapsedFrameTime);
+            MoveTo(bossPosition);
         }
     }
 }
