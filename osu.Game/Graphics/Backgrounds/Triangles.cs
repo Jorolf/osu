@@ -13,7 +13,7 @@ using System;
 
 namespace osu.Game.Graphics.Backgrounds
 {
-    public class Triangles : Container<Triangle>
+    public class Triangles : Container<Polygon>
     {
         public override bool HandleInput => false;
 
@@ -87,7 +87,7 @@ namespace osu.Game.Graphics.Backgrounds
                 addTriangle(false);
         }
 
-        protected virtual Triangle CreateTriangle()
+        protected virtual Polygon CreateTriangle()
         {
             const float std_dev = 0.16f;
             const float mean = 0.5f;
@@ -99,7 +99,7 @@ namespace osu.Game.Graphics.Backgrounds
 
             const float size = 100;
 
-            return new EquilateralTriangle
+            return new Polygon
             {
                 Origin = Anchor.TopCentre,
                 RelativePositionAxes = Axes.Both,
