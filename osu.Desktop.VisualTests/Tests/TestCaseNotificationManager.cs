@@ -18,6 +18,8 @@ namespace osu.Desktop.VisualTests.Tests
 
         private NotificationManager manager;
 
+        protected override double TimePerAction => 80;
+
         public override void Reset()
         {
             base.Reset();
@@ -36,10 +38,12 @@ namespace osu.Desktop.VisualTests.Tests
             AddStep(@"simple #2", sendNotification2);
             AddStep(@"progress #1", sendProgress1);
             AddStep(@"progress #2", sendProgress2);
-            AddStep(@"barrage", () => sendBarrage());
+            AddRepeatStep(@"barrage", sendBarrage, 100);
+
+            
         }
 
-        private void sendBarrage(int remaining = 100)
+        private void sendBarrage()
         {
             switch (RNG.Next(0, 4))
             {
@@ -55,12 +59,6 @@ namespace osu.Desktop.VisualTests.Tests
                 case 3:
                     sendProgress2();
                     break;
-            }
-
-            if (remaining > 0)
-            {
-                Delay(80);
-                Schedule(() => sendBarrage(remaining - 1));
             }
         }
 
