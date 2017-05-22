@@ -434,7 +434,8 @@
     <Compile Include="Rulesets\Replays\IAutoGenerator.cs" />
     <Compile Include="Rulesets\Replays\AutoGenerator.cs" />
     <Compile Include="Overlays\DirectOverlay.cs" />
-    <Compile Include="Screens\Multiplayer\MultiRoomPanel.cs" />
+    <Compile Include="Screens\Multiplayer\DrawableMultiplayerRoom.cs" />
+    <Compile Include="Online\Multiplayer\MultiplayerRoom.cs" />
     <Compile Include="Overlays\Direct\FilterControl.cs" />
     <Compile Include="Overlays\Direct\Header.cs" />
     <Compile Include="Overlays\Direct\SortTabControl.cs" />
@@ -468,6 +469,9 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Online\Multiplayer\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
