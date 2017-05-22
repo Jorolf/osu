@@ -434,6 +434,7 @@
     <Compile Include="Rulesets\Replays\IAutoGenerator.cs" />
     <Compile Include="Rulesets\Replays\AutoGenerator.cs" />
     <Compile Include="Overlays\DirectOverlay.cs" />
+    <Compile Include="Screens\Multiplayer\MultiRoomPanel.cs" />
     <Compile Include="Overlays\Direct\FilterControl.cs" />
     <Compile Include="Overlays\Direct\Header.cs" />
     <Compile Include="Overlays\Direct\SortTabControl.cs" />
