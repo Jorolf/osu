@@ -434,10 +434,10 @@
     <Compile Include="Rulesets\Replays\IAutoGenerator.cs" />
     <Compile Include="Rulesets\Replays\AutoGenerator.cs" />
     <Compile Include="Overlays\DirectOverlay.cs" />
-    <Compile Include="Screens\Multiplayer\DrawableMultiplayerRoom.cs" />
+    <Compile Include="Screens\Multiplayer\DrawableRoom.cs" />
+    <Compile Include="Online\Multiplayer\Room.cs" />
     <Compile Include="Users\UserPanel.cs" />
     <Compile Include="Users\UserStatus.cs" />
-    <Compile Include="Online\Multiplayer\MultiplayerRoom.cs" />
     <Compile Include="Overlays\Direct\FilterControl.cs" />
     <Compile Include="Overlays\Direct\Header.cs" />
     <Compile Include="Overlays\Direct\SortTabControl.cs" />
