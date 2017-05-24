@@ -10,6 +10,7 @@ using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Sprites;
 using osu.Framework.Graphics.Textures;
 using osu.Framework.Input;
+using osu.Framework.MathUtils;
 using osu.Game.Graphics;
 using osu.Game.Graphics.Backgrounds;
 using osu.Game.Graphics.Containers;
@@ -36,6 +37,8 @@ namespace osu.Game.Screens.Menu
         private SampleChannel sampleClick;
 
         private readonly Container colourAndTriangles;
+
+        private Triangles triangles;
 
         public Action Action;
 
@@ -148,7 +151,7 @@ namespace osu.Game.Screens.Menu
                                                                             RelativeSizeAxes = Axes.Both,
                                                                             Colour = OsuPink,
                                                                         },
-                                                                        new Triangles
+                                                                        triangles = new Triangles
                                                                         {
                                                                             TriangleScale = 4,
                                                                             ColourLight = OsuColour.FromHex(@"ff7db7"),
@@ -255,8 +258,14 @@ namespace osu.Game.Screens.Menu
         {
             base.Update();
 
+            const float velocity_adjust_cutoff = 0.98f;
             var maxAmplitude = lastBeatIndex >= 0 ? Beatmap.Value?.Track?.CurrentAmplitudes.Maximum ?? 0 : 0;
             logoAmplitudeContainer.ScaleTo(1 - maxAmplitude * 0.04f, 50, EasingTypes.OutQuint);
+
+            if (maxAmplitude > velocity_adjust_cutoff)
+                triangles.Velocity = 1 + Math.Max(0, maxAmplitude - velocity_adjust_cutoff) * 50;
+            else
+                triangles.Velocity = (float)Interpolation.Damp(triangles.Velocity, 1, 0.995f, Time.Elapsed);
         }
 
         protected override bool OnMouseDown(InputState state, MouseDownEventArgs args)
