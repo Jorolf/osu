@@ -38,7 +38,7 @@ namespace osu.Game.Screens.Menu
 
         private readonly Container colourAndTriangles;
 
-        private Triangles triangles;
+        private readonly Triangles triangles;
 
         public Action Action;
 
