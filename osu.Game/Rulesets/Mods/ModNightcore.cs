@@ -12,6 +12,7 @@ namespace osu.Game.Rulesets.Mods
         public override string Name => "Nightcore";
         public override FontAwesome Icon => FontAwesome.fa_osu_mod_nightcore;
         public override string Description => "uguuuuuuuu";
+        public override string ShortName => "NC";
 
         public override void ApplyToClock(IAdjustableClock clock)
         {

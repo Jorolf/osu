@@ -8,6 +8,7 @@ using osu.Game.Beatmaps;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Users;
 using osu.Game.Rulesets.Replays;
+using System.Linq;
 
 namespace osu.Game.Rulesets.Scoring
 {
@@ -28,11 +29,31 @@ namespace osu.Game.Rulesets.Scoring
         public int Combo { get; set; }
 
         [JsonProperty(@"mods")]
-        protected string[] ModStrings { get; set; } //todo: parse to Mod objects
+        protected string[] ModStrings { get; set; }
 
         public RulesetInfo Ruleset { get; set; }
 
-        public Mod[] Mods { get; set; }
+        private Mod[] mods;
+
+        public Mod[] Mods
+        {
+            get
+            {
+                if (mods != null)
+                    return mods;
+                mods = new Mod[ModStrings.Length];
+                Ruleset ruleset = (Ruleset ?? Beatmap.Ruleset).CreateInstance();
+                List<Mod> rulesetMods = new List<Mod>(ruleset.GetMods());
+                System.Diagnostics.Debug.WriteLine(rulesetMods.Select(mod => mod.ShortName).Aggregate((s1, s2) => s1 + s2));
+                for (int i = 0; i < ModStrings.Length; i++)
+                {
+                    mods[i] = rulesetMods.Find(mod => mod.ShortName == ModStrings[i]);
+                    if(mods[i] == null)
+                        throw new ArgumentNullException(ModStrings[i]);
+                }
+                return mods;
+            }
+        }
 
         [JsonProperty(@"user")]
         public User User;

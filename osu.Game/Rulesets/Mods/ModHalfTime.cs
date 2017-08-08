@@ -15,6 +15,7 @@ namespace osu.Game.Rulesets.Mods
         public override string Description => "Less zoom";
         public override bool Ranked => true;
         public override Type[] IncompatibleMods => new[] { typeof(ModDoubleTime) };
+        public override string ShortName => "HT";
 
         public override double ScoreMultiplier => 1.12;
 

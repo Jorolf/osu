@@ -13,5 +13,6 @@ namespace osu.Game.Rulesets.Mods
         public override ModType Type => ModType.DifficultyIncrease;
         public override string Description => "Everything just got a bit harder...";
         public override Type[] IncompatibleMods => new[] { typeof(ModEasy) };
+        public override string ShortName => "HR";
     }
 }

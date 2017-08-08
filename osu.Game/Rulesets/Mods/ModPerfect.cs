@@ -7,5 +7,6 @@ namespace osu.Game.Rulesets.Mods
     {
         public override string Name => "Perfect";
         public override string Description => "SS or quit.";
+        public override string ShortName => "PF";
     }
 }

@@ -11,5 +11,6 @@ namespace osu.Game.Rulesets.Mods
         public override FontAwesome Icon => FontAwesome.fa_osu_mod_hidden;
         public override ModType Type => ModType.DifficultyIncrease;
         public override bool Ranked => true;
+        public override string ShortName => "HD";
     }
 }

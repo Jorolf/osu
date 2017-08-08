@@ -16,6 +16,11 @@ namespace osu.Game.Online.API.Requests
         public GetScoresRequest(BeatmapInfo beatmap)
         {
             this.beatmap = beatmap;
+            Success += response =>
+            {
+                foreach (Score score in response.Scores)
+                    score.Beatmap = beatmap;
+            };
         }
 
         protected override WebRequest CreateWebRequest()

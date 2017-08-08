@@ -45,5 +45,10 @@ namespace osu.Game.Rulesets.Mods
         /// The mods this mod cannot be enabled with.
         /// </summary>
         public virtual Type[] IncompatibleMods => new Type[] { };
+
+        /// <summary>
+        /// The abbreviation of this mod
+        /// </summary>
+        public virtual string ShortName => string.Empty;
     }
 }

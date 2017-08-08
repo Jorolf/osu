@@ -15,6 +15,7 @@ namespace osu.Game.Rulesets.Mods
         public override string Description => "Zoooooooooom";
         public override bool Ranked => true;
         public override Type[] IncompatibleMods => new[] { typeof(ModHalfTime) };
+        public override string ShortName => "DT";
 
         public override double ScoreMultiplier => 1.12;
 

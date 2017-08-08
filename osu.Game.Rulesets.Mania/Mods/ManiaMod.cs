@@ -73,6 +73,7 @@ namespace osu.Game.Rulesets.Mania.Mods
         public override double ScoreMultiplier => 1;
         public override bool Ranked => true;
         public override Type[] IncompatibleMods => new[] { typeof(ModFlashlight) };
+        public override string ShortName => "FI";
     }
 
     public class ManiaModRandom : Mod
@@ -87,6 +88,7 @@ namespace osu.Game.Rulesets.Mania.Mods
         public abstract int KeyCount { get; }
         public override double ScoreMultiplier => 1; // TODO: Implement the mania key mod score multiplier
         public override bool Ranked => true;
+        public override string ShortName => Name;
     }
 
     public class ManiaModKey1 : ManiaKeyMod

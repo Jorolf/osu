@@ -9,6 +9,8 @@ using osu.Game.Screens.Play;
 using System.Collections.Generic;
 using osu.Game.Rulesets.Scoring;
 using osu.Game.Overlays.Settings;
+using System;
+using System.Linq;
 
 namespace osu.Game.Rulesets
 {
@@ -43,5 +45,22 @@ namespace osu.Game.Rulesets
         /// Do not override this unless you are a legacy mode.
         /// </summary>
         public virtual int LegacyID => -1;
+
+        public IEnumerable<Mod> GetMods()
+        {
+            List<Mod> mods = new List<Mod>();
+            foreach(ModType type in Enum.GetValues(typeof(ModType)))
+            {
+                mods.AddRange(GetModsFor(type).SelectMany(mod =>
+                {
+                    MultiMod multiMod = mod as MultiMod;
+                    if (multiMod != null)
+                        return multiMod.Mods;
+                    else
+                        return new Mod[] { mod };
+                }));
+            }
+            return mods;
+        }
     }
 }

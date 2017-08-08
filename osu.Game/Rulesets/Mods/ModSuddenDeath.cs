@@ -15,5 +15,6 @@ namespace osu.Game.Rulesets.Mods
         public override double ScoreMultiplier => 1;
         public override bool Ranked => true;
         public override Type[] IncompatibleMods => new[] { typeof(ModNoFail), typeof(ModRelax), typeof(ModAutoplay) };
+        public override string ShortName => "SD";
     }
 }

@@ -83,6 +83,7 @@ namespace osu.Game.Rulesets.Osu.Mods
         public override double ScoreMultiplier => 0.9;
         public override bool Ranked => true;
         public override Type[] IncompatibleMods => new[] { typeof(ModAutoplay), typeof(OsuModAutopilot) };
+        public override string ShortName => "SO";
     }
 
     public class OsuModAutopilot : Mod
@@ -93,6 +94,7 @@ namespace osu.Game.Rulesets.Osu.Mods
         public override double ScoreMultiplier => 0;
         public override bool Ranked => false;
         public override Type[] IncompatibleMods => new[] { typeof(OsuModSpunOut), typeof(ModRelax), typeof(ModSuddenDeath), typeof(ModNoFail), typeof(ModAutoplay) };
+        public override string ShortName => "AP";
     }
 
     public class OsuModAutoplay : ModAutoplay<OsuHitObject>
