@@ -95,7 +95,7 @@ namespace osu.Game.Overlays.Chat
             {
                 Font = @"Exo2.0-BoldItalic",
                 Text = $@"{Message.Sender.Username}" + (hasBackground ? "" : ":"),
-                Colour = hasBackground ? customUsernameColour : username_colours[Message.UserId % username_colours.Length],
+                Colour = hasBackground ? getUsernameColour(OsuColour.FromHex(Message.Sender.Colour), customUsernameColour) : username_colours[Message.UserId % username_colours.Length],
                 TextSize = text_size,
             };
 
@@ -177,6 +177,14 @@ namespace osu.Game.Overlays.Chat
                     }
                 }
             };
+        }
+
+        private static Color4 getUsernameColour(Color4 backgroundColour, Color4 defaultUsernameColour)
+        {
+            // Counting the perceptive luminance - human eye favors green color...
+            double a = 1 - (0.299 * backgroundColour.R + 0.587 * backgroundColour.G + 0.114 * backgroundColour.B) / 255;
+
+            return a < 0.5 ? defaultUsernameColour : Color4.LightGray;
         }
     }
 }
