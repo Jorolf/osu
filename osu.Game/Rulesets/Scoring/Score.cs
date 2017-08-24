@@ -43,7 +43,7 @@ namespace osu.Game.Rulesets.Scoring
                     return mods;
                 mods = new Mod[ModStrings.Length];
                 Ruleset ruleset = (Ruleset ?? Beatmap.Ruleset).CreateInstance();
-                List<Mod> rulesetMods = new List<Mod>(ruleset.GetMods());
+                List<Mod> rulesetMods = new List<Mod>(ruleset.GetAllMods());
                 System.Diagnostics.Debug.WriteLine(rulesetMods.Select(mod => mod.ShortName).Aggregate((s1, s2) => s1 + s2));
                 for (int i = 0; i < ModStrings.Length; i++)
                 {

@@ -54,22 +54,14 @@ namespace osu.Game.Rulesets
         /// </summary>
         public virtual int LegacyID => -1;
 
-        public IEnumerable<Mod> GetMods()
-        {
-            List<Mod> mods = new List<Mod>();
-            foreach(ModType type in Enum.GetValues(typeof(ModType)))
-            {
-                mods.AddRange(GetModsFor(type).SelectMany(mod =>
-                {
-                    MultiMod multiMod = mod as MultiMod;
-                    if (multiMod != null)
-                        return multiMod.Mods;
-                    else
-                        return new Mod[] { mod };
-                }));
-            }
-            return mods;
-        }
+        public IEnumerable<Mod> GetAllMods() => Enum.GetValues(typeof(ModType)).Cast<ModType>()
+                                                // Get all mod types as an IEnumerable<ModType>
+                                                .SelectMany(GetModsFor)
+                                                // Confine all mods of each mod type into a single IEnumerable<Mod>
+                                                .Where(mod => mod != null)
+                                                // Filter out all null mods
+                                                .SelectMany(mod => (mod as MultiMod)?.Mods ?? new[] { mod });
+                                                // Resolve MultiMods as their .Mods property
         /// <summary>
         /// A list of available variant ids.
         /// </summary>
