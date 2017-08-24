@@ -2,11 +2,12 @@
 // Licensed under the MIT Licence - https://raw.githubusercontent.com/ppy/osu/master/LICENCE
 
 using System;
+using osu.Game.Beatmaps;
 using osu.Game.Graphics;
 
 namespace osu.Game.Rulesets.Mods
 {
-    public abstract class ModEasy : Mod
+    public abstract class ModEasy : Mod, IApplicableToDifficulty
     {
         public override string Name => "Easy";
         public override FontAwesome Icon => FontAwesome.fa_osu_mod_easy;
@@ -16,5 +17,14 @@ namespace osu.Game.Rulesets.Mods
         public override bool Ranked => true;
         public override Type[] IncompatibleMods => new[] { typeof(ModHardRock) };
         public override string ShortName => "EZ";
+
+        public void ApplyToDifficulty(BeatmapDifficulty difficulty)
+        {
+            const float ratio = 0.5f;
+            difficulty.CircleSize *= ratio;
+            difficulty.ApproachRate *= ratio;
+            difficulty.DrainRate *= ratio;
+            difficulty.OverallDifficulty *= ratio;
+        }
     }
 }

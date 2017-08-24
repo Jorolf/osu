@@ -28,35 +28,15 @@ namespace osu.Game.Overlays.Direct
         {
             RelativeSizeAxes = Axes.X;
             Height = height;
-            CornerRadius = 5;
-            Masking = true;
-            EdgeEffect = new EdgeEffectParameters
-            {
-                Type = EdgeEffectType.Shadow,
-                Offset = new Vector2(0f, 1f),
-                Radius = 3f,
-                Colour = Color4.Black.Opacity(0.25f),
-            };
-        }
-
-        protected override void LoadComplete()
-        {
-            base.LoadComplete();
-
-            this.FadeInFromZero(200, Easing.Out);
         }
 
         [BackgroundDependencyLoader]
         private void load(LocalisationEngine localisation)
         {
-            Children = new[]
+            Content.CornerRadius = 5;
+
+            AddRange(new Drawable[]
             {
-                new Box
-                {
-                    RelativeSizeAxes = Axes.Both,
-                    Colour = Color4.Black,
-                },
-                CreateBackground(),
                 new Box
                 {
                     RelativeSizeAxes = Axes.Both,
@@ -144,26 +124,26 @@ namespace osu.Game.Overlays.Direct
                             Anchor = Anchor.TopRight,
                             Origin = Anchor.TopRight,
                             Size = new Vector2(height - vertical_padding * 2),
+                            Action = StartDownload
                         },
                     },
                 },
-            };
+            });
         }
 
         private class DownloadButton : OsuClickableContainer
         {
-            private readonly TextAwesome icon;
+            private readonly SpriteIcon icon;
 
             public DownloadButton()
             {
                 Children = new Drawable[]
                 {
-                    icon = new TextAwesome
+                    icon = new SpriteIcon
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
-                        UseFullGlyphHeight = false,
-                        TextSize = 30,
+                        Size = new Vector2(30),
                         Icon = FontAwesome.fa_osu_chevron_down_o,
                     },
                 };

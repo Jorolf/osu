@@ -50,8 +50,6 @@ namespace osu.Game.Screens.Select
             AlwaysPresent = true;
         }
 
-        protected override bool HideOnEscape => false;
-
         protected override bool BlockPassThroughMouse => false;
 
         protected override void PopIn()
@@ -247,21 +245,21 @@ namespace osu.Game.Screens.Select
                     AutoSizeAxes = Axes.Both;
                     Children = new Drawable[]
                     {
-                    new TextAwesome
+                    new SpriteIcon
                     {
                         Icon = FontAwesome.fa_square,
                         Origin = Anchor.Centre,
                         Colour = new Color4(68, 17, 136, 255),
                         Rotation = 45,
-                        TextSize = 20
+                        Size = new Vector2(20),
                     },
-                    new TextAwesome
+                    new SpriteIcon
                     {
                         Icon = statistic.Icon,
                         Origin = Anchor.Centre,
                         Colour = new Color4(255, 221, 85, 255),
                         Scale = new Vector2(0.8f),
-                        TextSize = 20
+                        Size = new Vector2(20),
                     },
                     new OsuSpriteText
                     {

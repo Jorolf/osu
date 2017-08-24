@@ -19,9 +19,9 @@ namespace osu.Game.Overlays.Notifications
     public abstract class Notification : Container
     {
         /// <summary>
-        /// Use requested close.
+        /// User requested close.
         /// </summary>
-        public Action Closed;
+        public event Action Closed;
 
         /// <summary>
         /// Run on user activating the notification. Return true to close.
@@ -63,6 +63,8 @@ namespace osu.Game.Overlays.Notifications
                     Masking = true,
                     RelativeSizeAxes = Axes.X,
                     AutoSizeAxes = Axes.Y,
+                    AutoSizeDuration = 400,
+                    AutoSizeEasing = Easing.OutQuint,
                     Children = new Drawable[]
                     {
                         new Box
@@ -74,7 +76,7 @@ namespace osu.Game.Overlays.Notifications
                         {
                             RelativeSizeAxes = Axes.X,
                             Padding = new MarginPadding(5),
-                            Height = 60,
+                            AutoSizeAxes = Axes.Y,
                             Children = new Drawable[]
                             {
                                 IconContent = new Container
@@ -140,12 +142,12 @@ namespace osu.Game.Overlays.Notifications
             NotificationContent.MoveToX(0, 500, Easing.OutQuint);
         }
 
-        private bool wasClosed;
+        public bool WasClosed;
 
         public virtual void Close()
         {
-            if (wasClosed) return;
-            wasClosed = true;
+            if (WasClosed) return;
+            WasClosed = true;
 
             Closed?.Invoke();
             this.FadeOut(100);
@@ -163,12 +165,12 @@ namespace osu.Game.Overlays.Notifications
 
                 Children = new[]
                 {
-                    new TextAwesome
+                    new SpriteIcon
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         Icon = FontAwesome.fa_times_circle,
-                        TextSize = 20
+                        Size = new Vector2(20),
                     }
                 };
             }

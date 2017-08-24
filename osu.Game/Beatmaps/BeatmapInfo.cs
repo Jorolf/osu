@@ -49,8 +49,15 @@ namespace osu.Game.Beatmaps
 
         public string Path { get; set; }
 
-        [JsonProperty("file_md5")]
+        [JsonProperty("file_sha2")]
         public string Hash { get; set; }
+
+        /// <summary>
+        /// MD5 is kept for legacy support (matching against replays, osu-web-10 etc.).
+        /// </summary>
+        [Indexed]
+        [JsonProperty("file_md5")]
+        public string MD5Hash { get; set; }
 
         // General
         public int AudioLeadIn { get; set; }
@@ -69,7 +76,7 @@ namespace osu.Game.Beatmaps
 
         // Editor
         // This bookmarks stuff is necessary because DB doesn't know how to store int[]
-        public string StoredBookmarks { get; internal set; }
+        public string StoredBookmarks { get; set; }
 
         [Ignore]
         [JsonIgnore]

@@ -14,23 +14,16 @@ using osu.Framework.Allocation;
 using OpenTK.Input;
 using System.Linq;
 using System.Collections.Generic;
-using osu.Game.Rulesets.Objects.Drawables;
-using osu.Framework.Input;
-using osu.Game.Rulesets.Mania.Objects.Drawables;
-using osu.Game.Rulesets.Timing;
 using osu.Framework.Configuration;
+using osu.Game.Rulesets.Objects.Drawables;
+using osu.Game.Rulesets.Mania.Objects.Drawables;
 using osu.Framework.Graphics.Shapes;
 
 namespace osu.Game.Rulesets.Mania.UI
 {
-    public class ManiaPlayfield : Playfield<ManiaHitObject, ManiaJudgement>
+    public class ManiaPlayfield : ScrollingPlayfield<ManiaHitObject, ManiaJudgement>
     {
         public const float HIT_TARGET_POSITION = 50;
-
-        private const double time_span_default = 1500;
-        private const double time_span_min = 50;
-        private const double time_span_max = 10000;
-        private const double time_span_step = 50;
 
         /// <summary>
         /// Default column keys, expanding outwards from the middle as more column are added.
@@ -53,16 +46,16 @@ namespace osu.Game.Rulesets.Mania.UI
             }
         }
 
+        /// <summary>
+        /// Whether this playfield should be inverted. This flips everything inside the playfield.
+        /// </summary>
+        public readonly Bindable<bool> Inverted = new Bindable<bool>(true);
+
         private readonly FlowContainer<Column> columns;
         public IEnumerable<Column> Columns => columns.Children;
 
-        private readonly BindableDouble visibleTimeRange = new BindableDouble(time_span_default)
-        {
-            MinValue = time_span_min,
-            MaxValue = time_span_max
-        };
-
-        private readonly SpeedAdjustmentCollection barLineContainer;
+        protected override Container<Drawable> Content => content;
+        private readonly Container<Drawable> content;
 
         private List<Color4> normalColumnColours = new List<Color4>();
         private Color4 specialColumnColour;
@@ -70,13 +63,16 @@ namespace osu.Game.Rulesets.Mania.UI
         private readonly int columnCount;
 
         public ManiaPlayfield(int columnCount)
+            : base(Axes.Y)
         {
             this.columnCount = columnCount;
 
             if (columnCount <= 0)
                 throw new ArgumentException("Can't have zero or fewer columns.");
 
-            Children = new Drawable[]
+            Inverted.Value = true;
+
+            InternalChildren = new Drawable[]
             {
                 new Container
                 {
@@ -120,13 +116,12 @@ namespace osu.Game.Rulesets.Mania.UI
                             Padding = new MarginPadding { Top = HIT_TARGET_POSITION },
                             Children = new[]
                             {
-                                barLineContainer = new SpeedAdjustmentCollection(Axes.Y)
+                                content = new Container
                                 {
                                     Name = "Bar lines",
                                     Anchor = Anchor.TopCentre,
                                     Origin = Anchor.TopCentre,
                                     RelativeSizeAxes = Axes.Y,
-                                    VisibleTimeRange = visibleTimeRange
                                     // Width is set in the Update method
                                 }
                             }
@@ -135,8 +130,26 @@ namespace osu.Game.Rulesets.Mania.UI
                 }
             };
 
+            var currentAction = ManiaAction.Key1;
             for (int i = 0; i < columnCount; i++)
-                columns.Add(new Column { VisibleTimeRange = visibleTimeRange });
+            {
+                var c = new Column();
+                c.VisibleTimeRange.BindTo(VisibleTimeRange);
+
+                c.IsSpecial = isSpecialColumn(i);
+                c.Action = c.IsSpecial ? ManiaAction.Special : currentAction++;
+
+                columns.Add(c);
+                AddNested(c);
+            }
+
+            Inverted.ValueChanged += invertedChanged;
+            Inverted.TriggerChange();
+        }
+
+        private void invertedChanged(bool newValue)
+        {
+            Scale = new Vector2(1, newValue ? -1 : 1);
         }
 
         [BackgroundDependencyLoader]
@@ -151,15 +164,11 @@ namespace osu.Game.Rulesets.Mania.UI
             specialColumnColour = colours.BlueDark;
 
             // Set the special column + colour + key
-            for (int i = 0; i < columnCount; i++)
+            foreach (var column in Columns)
             {
-                Column column = Columns.ElementAt(i);
-                column.IsSpecial = isSpecialColumn(i);
-
                 if (!column.IsSpecial)
                     continue;
 
-                column.Key.Value = Key.Space;
                 column.AccentColour = specialColumnColour;
             }
 
@@ -172,21 +181,6 @@ namespace osu.Game.Rulesets.Mania.UI
                 Color4 colour = normalColumnColours[i % normalColumnColours.Count];
                 nonSpecialColumns[i].AccentColour = colour;
                 nonSpecialColumns[nonSpecialColumns.Count - 1 - i].AccentColour = colour;
-            }
-
-            // We'll set the keys for non-special columns in another separate loop because it's not mirrored like the above colours
-            // Todo: This needs to go when we get to bindings and use Button1, ..., ButtonN instead
-            for (int i = 0; i < nonSpecialColumns.Count; i++)
-            {
-                Column column = nonSpecialColumns[i];
-
-                int keyOffset = default_keys.Length / 2 - nonSpecialColumns.Count / 2 + i;
-                if (keyOffset >= 0 && keyOffset < default_keys.Length)
-                    column.Key.Value = default_keys[keyOffset];
-                else
-                    // There is no default key defined for this column. Let's set this to Unknown for now
-                    // however note that this will be gone after bindings are in place
-                    column.Key.Value = Key.Unknown;
             }
         }
 
@@ -210,37 +204,13 @@ namespace osu.Game.Rulesets.Mania.UI
         }
 
         public override void Add(DrawableHitObject<ManiaHitObject, ManiaJudgement> h) => Columns.ElementAt(h.HitObject.Column).Add(h);
-        public void Add(DrawableBarLine barline) => barLineContainer.Add(barline);
-        public void Add(SpeedAdjustmentContainer speedAdjustment) => barLineContainer.Add(speedAdjustment);
-
-        protected override bool OnKeyDown(InputState state, KeyDownEventArgs args)
-        {
-            if (state.Keyboard.ControlPressed)
-            {
-                switch (args.Key)
-                {
-                    case Key.Minus:
-                        transformVisibleTimeRangeTo(visibleTimeRange + time_span_step, 200, Easing.OutQuint);
-                        break;
-                    case Key.Plus:
-                        transformVisibleTimeRangeTo(visibleTimeRange - time_span_step, 200, Easing.OutQuint);
-                        break;
-                }
-            }
-
-            return false;
-        }
-
-        private void transformVisibleTimeRangeTo(double newTimeRange, double duration = 0, Easing easing = Easing.None)
-        {
-            this.TransformTo(nameof(visibleTimeRange), newTimeRange, duration, easing);
-        }
+        public void Add(DrawableBarLine barline) => HitObjects.Add(barline);
 
         protected override void Update()
         {
             // Due to masking differences, it is not possible to get the width of the columns container automatically
             // While masking on effectively only the Y-axis, so we need to set the width of the bar line container manually
-            barLineContainer.Width = columns.Width;
+            content.Width = columns.Width;
         }
     }
 }

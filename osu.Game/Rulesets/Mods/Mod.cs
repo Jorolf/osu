@@ -47,6 +47,11 @@ namespace osu.Game.Rulesets.Mods
         public virtual Type[] IncompatibleMods => new Type[] { };
 
         /// <summary>
+        /// Whether we should allow failing at the current point in time.
+        /// </summary>        
+        public virtual bool AllowFail => true;
+
+        /// <summary>
         /// The abbreviation of this mod
         /// </summary>
         public virtual string ShortName => string.Empty;

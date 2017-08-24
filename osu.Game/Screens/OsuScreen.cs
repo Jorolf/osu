@@ -47,7 +47,7 @@ namespace osu.Game.Screens
             }
         }
 
-        private readonly Bindable<RulesetInfo> ruleset = new Bindable<RulesetInfo>();
+        protected readonly Bindable<RulesetInfo> Ruleset = new Bindable<RulesetInfo>();
 
         private SampleChannel sampleExit;
 
@@ -64,22 +64,9 @@ namespace osu.Game.Screens
             }
 
             if (osuGame != null)
-                ruleset.BindTo(osuGame.Ruleset);
+                Ruleset.BindTo(osuGame.Ruleset);
 
             sampleExit = audio.Sample.Get(@"UI/melodic-1");
-        }
-
-        protected override void Update()
-        {
-            if (!IsCurrentScreen) return;
-
-            if (ParentScreen != null)
-            {
-                // we only want to apply these restrictions when we are inside a screen stack.
-                // the use case for not applying is in visual/unit tests.
-                ruleset.Disabled = !AllowBeatmapRulesetChange;
-                Beatmap.Disabled = !AllowBeatmapRulesetChange;
-            }
         }
 
         protected override void OnResuming(Screen last)

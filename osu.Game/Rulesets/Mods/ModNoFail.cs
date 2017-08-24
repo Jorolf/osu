@@ -16,5 +16,10 @@ namespace osu.Game.Rulesets.Mods
         public override bool Ranked => true;
         public override Type[] IncompatibleMods => new[] { typeof(ModRelax), typeof(ModSuddenDeath), typeof(ModAutoplay) };
         public override string ShortName => "NF";
+
+        /// <summary>
+        /// We never fail, 'yo.
+        /// </summary>
+        public override bool AllowFail => false;
     }
 }

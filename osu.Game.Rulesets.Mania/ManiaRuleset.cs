@@ -2,13 +2,14 @@
 // Licensed under the MIT Licence - https://raw.githubusercontent.com/ppy/osu/master/LICENCE
 
 using osu.Game.Beatmaps;
-using osu.Game.Graphics;
 using osu.Game.Rulesets.Mania.Mods;
 using osu.Game.Rulesets.Mania.UI;
 using osu.Game.Rulesets.Mods;
 using osu.Game.Rulesets.UI;
-using osu.Game.Screens.Play;
 using System.Collections.Generic;
+using osu.Framework.Graphics;
+using osu.Framework.Input.Bindings;
+using osu.Game.Graphics;
 using osu.Game.Rulesets.Mania.Scoring;
 using osu.Game.Rulesets.Scoring;
 
@@ -16,7 +17,7 @@ namespace osu.Game.Rulesets.Mania
 {
     public class ManiaRuleset : Ruleset
     {
-        public override HitRenderer CreateHitRendererWith(WorkingBeatmap beatmap, bool isForCurrentRuleset) => new ManiaHitRenderer(beatmap, isForCurrentRuleset);
+        public override RulesetContainer CreateRulesetContainerWith(WorkingBeatmap beatmap, bool isForCurrentRuleset) => new ManiaRulesetContainer(this, beatmap, isForCurrentRuleset);
 
         public override IEnumerable<Mod> GetModsFor(ModType type)
         {
@@ -104,16 +105,59 @@ namespace osu.Game.Rulesets.Mania
             }
         }
 
+        public override Mod GetAutoplayMod() => new ModAutoplay();
+
         public override string Description => "osu!mania";
 
-        public override FontAwesome Icon => FontAwesome.fa_osu_mania_o;
-
-        public override IEnumerable<KeyCounter> CreateGameplayKeys() => new KeyCounter[] { /* Todo: Should be keymod specific */ };
+        public override Drawable CreateIcon() => new SpriteIcon { Icon = FontAwesome.fa_osu_mania_o };
 
         public override DifficultyCalculator CreateDifficultyCalculator(Beatmap beatmap) => new ManiaDifficultyCalculator(beatmap);
 
         public override ScoreProcessor CreateScoreProcessor() => new ManiaScoreProcessor();
 
         public override int LegacyID => 3;
+
+        public ManiaRuleset(RulesetInfo rulesetInfo)
+            : base(rulesetInfo)
+        {
+        }
+
+        public override IEnumerable<int> AvailableVariants => new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+        public override IEnumerable<KeyBinding> GetDefaultKeyBindings(int variant = 0)
+        {
+            var leftKeys = new[]
+            {
+                InputKey.A,
+                InputKey.S,
+                InputKey.D,
+                InputKey.F
+            };
+
+            var rightKeys = new[]
+            {
+                InputKey.J,
+                InputKey.K,
+                InputKey.L,
+                InputKey.Semicolon
+            };
+
+            ManiaAction currentKey = ManiaAction.Key1;
+
+            var bindings = new List<KeyBinding>();
+
+            for (int i = leftKeys.Length - variant / 2; i < leftKeys.Length; i++)
+                bindings.Add(new KeyBinding(leftKeys[i], currentKey++));
+
+            for (int i = 0; i < variant / 2; i++)
+                bindings.Add(new KeyBinding(rightKeys[i], currentKey++));
+
+            if (variant % 2 == 1)
+                bindings.Add(new KeyBinding(InputKey.Space, ManiaAction.Special));
+
+            return bindings;
+        }
+
+        public override string GetVariantName(int variant) => $"{variant}K";
     }
 }

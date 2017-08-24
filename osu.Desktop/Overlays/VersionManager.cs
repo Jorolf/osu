@@ -2,6 +2,7 @@
 // Licensed under the MIT Licence - https://raw.githubusercontent.com/ppy/osu/master/LICENCE
 
 using System;
+using System.Diagnostics;
 using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Colour;
@@ -19,26 +20,30 @@ using OpenTK.Graphics;
 using System.Net.Http;
 using osu.Framework.Logging;
 using osu.Game;
+using osu.Game.Configuration;
 
 namespace osu.Desktop.Overlays
 {
     public class VersionManager : OverlayContainer
     {
         private UpdateManager updateManager;
-        private NotificationManager notificationManager;
-
-        protected override bool HideOnEscape => false;
+        private NotificationOverlay notificationOverlay;
+        private OsuConfigManager config;
+        private OsuGameBase game;
 
         public override bool HandleInput => false;
 
         [BackgroundDependencyLoader]
-        private void load(NotificationManager notification, OsuColour colours, TextureStore textures, OsuGameBase game)
+        private void load(NotificationOverlay notification, OsuColour colours, TextureStore textures, OsuGameBase game, OsuConfigManager config)
         {
-            notificationManager = notification;
+            notificationOverlay = notification;
+            this.config = config;
+            this.game = game;
 
             AutoSizeAxes = Axes.Both;
             Anchor = Anchor.BottomCentre;
             Origin = Anchor.BottomCentre;
+
             Alpha = 0;
 
             Children = new Drawable[]
@@ -93,6 +98,42 @@ namespace osu.Desktop.Overlays
                 checkForUpdateAsync();
         }
 
+        protected override void LoadComplete()
+        {
+            base.LoadComplete();
+
+            var version = game.Version;
+            var lastVersion = config.Get<string>(OsuSetting.Version);
+            if (game.IsDeployedBuild && version != lastVersion)
+            {
+                config.Set(OsuSetting.Version, version);
+
+                // only show a notification if we've previously saved a version to the config file (ie. not the first run).
+                if (!string.IsNullOrEmpty(lastVersion))
+                    Scheduler.AddDelayed(() => notificationOverlay.Post(new UpdateCompleteNotification(version)), 5000);
+            }
+        }
+
+        private class UpdateCompleteNotification : SimpleNotification
+        {
+            public UpdateCompleteNotification(string version)
+            {
+                Text = $"You are now running osu!lazer {version}.\nClick to see what's new!";
+                Icon = FontAwesome.fa_check_square;
+                Activated = delegate
+                {
+                    Process.Start($"https://github.com/ppy/osu/releases/tag/v{version}");
+                    return true;
+                };
+            }
+
+            [BackgroundDependencyLoader]
+            private void load(OsuColour colours)
+            {
+                IconBackgound.Colour = colours.BlueDark;
+            }
+        }
+
         protected override void Dispose(bool isDisposing)
         {
             base.Dispose(isDisposing);
@@ -116,7 +157,7 @@ namespace osu.Desktop.Overlays
                 if (notification == null)
                 {
                     notification = new UpdateProgressNotification { State = ProgressNotificationState.Active };
-                    Schedule(() => notificationManager.Post(notification));
+                    Schedule(() => notificationOverlay.Post(notification));
                 }
 
                 Schedule(() =>
@@ -209,13 +250,13 @@ namespace osu.Desktop.Overlays
                         RelativeSizeAxes = Axes.Both,
                         Colour = ColourInfo.GradientVertical(colours.YellowDark, colours.Yellow)
                     },
-                    new TextAwesome
+                    new SpriteIcon
                     {
                         Anchor = Anchor.Centre,
                         Origin = Anchor.Centre,
                         Icon = FontAwesome.fa_upload,
                         Colour = Color4.White,
-                        TextSize = 20
+                        Size = new Vector2(20),
                     }
                 });
             }
