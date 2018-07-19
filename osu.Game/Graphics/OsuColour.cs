@@ -84,13 +84,19 @@ namespace osu.Game.Graphics
         public readonly Color4 GrayF = FromHex(@"fff");
 
         public readonly Color4 RedLighter = FromHex(@"ffeded");
-        public readonly Color4 RedLight = FromHex(@"ed7787");
-        public readonly Color4 Red = FromHex(@"ed1121");
+        public readonly Color4 RedLight = FromHex(@"ed7887");
+        public readonly Color4 Red = FromHex(@"ed1221");
         public readonly Color4 RedDark = FromHex(@"ba0011");
         public readonly Color4 RedDarker = FromHex(@"870000");
 
         public readonly Color4 ChatBlue = FromHex(@"17292e");
 
         public readonly Color4 ContextMenuGray = FromHex(@"223034");
+
+        public readonly Color4 DarkPurpleLighter = FromHex(@"ebb8fe");
+        public readonly Color4 DarkPurpleLight = FromHex(@"cba4da");
+        public readonly Color4 DarkPurple = FromHex(@"bf04ff");
+        public readonly Color4 DarkPurpleDark = FromHex(@"312436");
+        public readonly Color4 DarkPurpleDarker = FromHex(@"201823");
     }
 }
